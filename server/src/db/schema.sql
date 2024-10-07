@@ -1,0 +1,3 @@
+DROP DATABASE IF EXISTS shiyaaka_db;
+
+CREATE DATABASE shiyaaka_db;

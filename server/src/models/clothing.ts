@@ -1,78 +1,87 @@
-import { DataTypes, ForeignKey, Model, Optional, Sequelize } from "sequelize";
+// NEEDS WORK
+
+import {
+  Model,
+  type InferAttributes,
+  type InferCreationAttributes,
+  type CreationOptional,
+  DataTypes,
+  type Sequelize,
+  type ForeignKey,
+} from "sequelize";
+
 import type { Category } from "./category.js";
 
-interface ClothingAttributes {
-    id: number;
-    name: string;
-    description: string;
-    category_id: number;
-    size: string;
-    stock_quanity: number;
-    image_url: string;
+export class Clothing extends Model<
+  InferAttributes<Clothing>,
+  InferCreationAttributes<Clothing>
+> {
+  declare id: CreationOptional<number>;
+  declare name: string;
+  declare description: string;
+  declare price: number;
+  declare category_id: ForeignKey<Category["id"]>;
+  declare size: string;
+  declare stock_quantity: number;
+  declare image_url: string
+
+  declare readonly createdAt: Date;
+  declare readonly updatedAt: Date;
 }
 
-interface ClothingCreationAttributes extends Optional<ClothingAttributes, 'id'> {}
-
-export class Clothing extends Model<ClothingAttributes, ClothingCreationAttributes> implements ClothingAttributes {
-
-    public id!: number;
-    public name!: string;
-    public description!: string;
-    public category_id!: ForeignKey<Category['id']>;
-    public size!: string;
-    public stock_quanity!: number;
-    public image_url!: string;
-
-    public readonly createdAt!: Date;
-    public readonly updatedAt!: Date;
-}
-
-export function ClothingFactory(sequelize: Sequelize): typeof Clothing {
-
-    Clothing.init(
-        {
-            id: {
-                type: DataTypes.INTEGER,
-                autoIncrement: true,
-                primaryKey: true
-            },
-            name: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    len: [0, 30]
-                }
-            },
-            description: {
-                type: DataTypes.STRING,
-                allowNull: false,
-                validate: {
-                    len: [8, 100]
-                }
-            },
-            category_id: {
-                type: DataTypes.INTEGER,
-                allowNull: false,
-            },
-            size: {
-                type: DataTypes.STRING,
-                allowNull: true,
-            },
-            stock_quanity: {
-                type: DataTypes.INTEGER,
-                allowNull: false
-            },
-            image_url: {
-                type: DataTypes.STRING,
-                allowNull: true
-            }
-
+export function ClothingFactory(sequelize: Sequelize) {
+  Clothing.init(
+    {
+        id: {
+            type: DataTypes.INTEGER,
+            autoIncrement: true,
+            primaryKey: true,
         },
-        {
-            tableName: 'clothing',
-            sequelize
+        name: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [0, 30],
+            },
+        },
+        description: {
+            type: DataTypes.STRING,
+            allowNull: false,
+            validate: {
+                len: [8, 100],
+            },
+        },
+        price: {
+          type: DataTypes.STRING,
+          allowNull: false,
+        },
+        size: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        stock_quantity: {
+            type: DataTypes.INTEGER,
+            allowNull: false,
+        },
+        image_url: {
+            type: DataTypes.STRING,
+            allowNull: true,
+        },
+        createdAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
+        },
+        updatedAt: {
+            type: DataTypes.DATE,
+            allowNull: false,
+            defaultValue: DataTypes.NOW,
         }
-    )
-
-    return Clothing;
+    },
+    {
+      tableName: "clothing",
+      sequelize,
+    }
+  )
+  return Clothing;
 }
